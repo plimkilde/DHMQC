@@ -188,8 +188,8 @@ static void compute_normal(double *p1, double *p2, double *p3,double z1, double 
 	n[2]=v1[0]*v2[1]-v1[1]*v2[0];
 }
 
-void get_triangle_geometry(double *xy, double *z, int *triangles, float *out , int ntriangles){
-	int i;
+void get_triangle_geometry(double *xy, double *z, index_t *triangles, float *out , index_t ntriangles){
+	index_t i;
 	double n[3],*p1,*p2,*p3,z1,z2,z3,x1,x2,y1,y2,zmax,zmin;
 	for(i=0;i<ntriangles;i++){
 		p1=xy+2*triangles[3*i];
@@ -733,8 +733,8 @@ int flood_cells(float *dem, float cut_off, char *mask, char *mask_out, int nrows
 	return n_set;
 }
 		
-void mark_bd_vertices(char *bd_candidates_mask, char *poly_mask, int *triangles, char *bd_mask_out, int ntriangles, int np){
-	int i,j,v;
+void mark_bd_vertices(char *bd_candidates_mask, char *poly_mask, index_t *triangles, char *bd_mask_out, index_t ntriangles, index_t np){
+	index_t i,j,v;
 	for(i=0; i<np; i++) bd_mask_out[i]=0;
 	for(i=0; i<ntriangles; i++){
 		if (bd_candidates_mask[i]){ /*this triangle is long, or steep, or something...*/

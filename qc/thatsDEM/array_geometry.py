@@ -35,6 +35,11 @@ INT32_VOXELS = np.ctypeslib.ndpointer(dtype=np.int32, ndim=3, flags=['C', 'O', '
 INT32_TYPE = np.ctypeslib.ndpointer(dtype=np.int32, ndim=1, flags=['C', 'O', 'A', 'W'])
 LP_CINT = ctypes.POINTER(ctypes.c_int)
 LP_CCHAR = ctypes.POINTER(ctypes.c_char)
+
+# corresponds to the typedef for index_t in trig_index.h
+CINDEX_T = ctypes.c_int64
+LP_CINDEX_T = ctypes.POINTER(ctypes.c_int64)
+
 lib = np.ctypeslib.load_library(LIBNAME, LIBDIR)
 ##############
 # corresponds to
@@ -46,11 +51,11 @@ lib.p_in_buf.restype = None
 lib.p_in_poly.argtypes = [XY_TYPE, MASK_TYPE, XY_TYPE, ctypes.c_uint, UINT32_TYPE, ctypes.c_uint]
 lib.p_in_poly.restype = ctypes.c_int
 lib.get_triangle_geometry.argtypes = [
-    XY_TYPE, Z_TYPE, LP_CINT, np.ctypeslib.ndpointer(
+    XY_TYPE, Z_TYPE, LP_CINDEX_T, np.ctypeslib.ndpointer(
         dtype=np.float32, ndim=2, flags=[
-            'C', 'O', 'A', 'W']), ctypes.c_int]
+            'C', 'O', 'A', 'W']), CINDEX_T]
 lib.get_triangle_geometry.restype = None
-lib.mark_bd_vertices.argtypes = [MASK_TYPE, MASK_TYPE, LP_CINT, MASK_TYPE, ctypes.c_int, ctypes.c_int]
+lib.mark_bd_vertices.argtypes = [MASK_TYPE, MASK_TYPE, LP_CINDEX_T, MASK_TYPE, CINDEX_T, CINDEX_T]
 lib.mark_bd_vertices.restype = None
 # int fill_spatial_index(int *sorted_flat_indices, int *index, int npoints, int max_index)
 lib.fill_spatial_index.argtypes = [INT32_TYPE, INT32_TYPE, ctypes.c_int, ctypes.c_int]

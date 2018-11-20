@@ -14,9 +14,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  * 
  */
+
+#include "../triangle/trig_index.h"
+
 int p_in_poly(double *p_in, char *mout, double *verts, unsigned int np, unsigned int  *nv, unsigned int n_rings);
 void p_in_buf(double *p_in, char *mout, double *verts, unsigned long np, unsigned long nv, double d);
-void get_triangle_geometry(double *xy, double *z, int *triangles, float *out , int ntriangles);
+void get_triangle_geometry(double *xy, double *z, index_t *triangles, float *out , index_t ntriangles);
 void fill_it_up(unsigned char *out, unsigned int *hmap, int rows, int cols, int stacks);
 void find_floating_voxels(int *lab,  int *out, int gcomp, int rows, int cols, int stacks);
 int fill_spatial_index(int *sorted_flat_indices, int *index, int npoints, int max_index);
