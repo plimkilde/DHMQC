@@ -15,6 +15,7 @@
  */
 
 #include "delaunator.hpp"
+#include "../triangle/trig_index.h"
 #include <stdlib.h> // for malloc/free
 
 #ifdef _WIN32
@@ -24,12 +25,12 @@
 #endif
 
 extern "C" {
-    SHARED_EXPORT void triangulate(unsigned long long num_vertices, double *vertices, int *ptr_num_faces, int **ptr_faces)
+    SHARED_EXPORT void triangulate(index_t num_vertices, double *vertices, index_t *ptr_num_faces, index_t **ptr_faces)
     {
         std::vector<double> coords;
         
         //TODO can the vector be constructed directly from the pointer?
-        for (unsigned long long i = 0; i < num_vertices; i++)
+        for (index_t i = 0; i < num_vertices; i++)
         {
             coords.push_back(vertices[2*i + 0]);
             coords.push_back(vertices[2*i + 1]);
@@ -38,8 +39,8 @@ extern "C" {
         // Actually perform triangulation
         delaunator::Delaunator triangulation(coords);
         
-        int num_faces = triangulation.triangles.size() / 3;
-        int *faces = (int *)malloc(num_faces * 3 * sizeof(int));
+        index_t num_faces = triangulation.triangles.size() / 3;
+        index_t *faces = (index_t *)malloc(num_faces * 3 * sizeof(index_t));
         
         for (int i = 0; i < num_faces; i++)
         {
@@ -52,7 +53,7 @@ extern "C" {
         *ptr_num_faces = num_faces;
     }
     
-    SHARED_EXPORT void free_face_data(int **ptr_faces)
+    SHARED_EXPORT void free_face_data(index_t **ptr_faces)
     {
         free(*ptr_faces);
         *ptr_faces = NULL;
