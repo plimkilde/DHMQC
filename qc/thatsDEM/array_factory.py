@@ -45,4 +45,4 @@ def int_array_factory(I):
     I = np.asarray(I)
     if I.ndim > 1:
         I = np.flatten(I)
-    return np.require(I, dtype=np.int32, requirements=['A', 'O', 'C'])
+    return np.require(I, dtype=np.int64, requirements=['A', 'O', 'C'])

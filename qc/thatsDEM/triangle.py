@@ -33,11 +33,16 @@ elif "darwin" in sys.platform:
 else:
     LIBNAME += ".so"
     DELAUNATOR_LIBNAME += ".so"
+
+# corresponds to the typedef for index_t in trig_index.h
+CINDEX_T = ctypes.c_int64
+LP_CINDEX_T = ctypes.POINTER(ctypes.c_int64)
+
 LP_CDOUBLE = ctypes.POINTER(ctypes.c_double)
 LP_CFLOAT = ctypes.POINTER(ctypes.c_float)
 LP_CINT = ctypes.POINTER(ctypes.c_int)
 LP_CCHAR = ctypes.POINTER(ctypes.c_char)
-LP_CULONGLONG = ctypes.POINTER(ctypes.c_ulonglong)
+#LP_CULONGLONG = ctypes.POINTER(ctypes.c_ulonglong)
 # lib_name=os.path.join(os.path.dirname(__file__),LIBNAME)
 lib_name = os.path.join(LIBDIR, LIBNAME)
 delaunator_lib_name = os.path.join(LIBDIR, DELAUNATOR_LIBNAME)
@@ -50,19 +55,19 @@ lib.free_index.argtypes = [ctypes.c_void_p]
 lib.find_triangle.restype = None
 lib.find_triangle.argtypes = [
     LP_CDOUBLE,
-    LP_CINT,
+    LP_CINDEX_T,
     LP_CDOUBLE,
-    LP_CINT,
+    LP_CINDEX_T,
     ctypes.c_void_p,
     LP_CCHAR,
-    ctypes.c_int]
+    CINDEX_T]
 # void find_appropriate_triangles(double *pts, int *out, double *base_pts,
 # double *base_z, int *tri, spatial_index *ind, int np, double tol_xy,
 # double tol_z);
 lib.inspect_index.restype = None
 lib.inspect_index.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_int]
 lib.build_index.restype = ctypes.c_void_p
-lib.build_index.argtypes = [LP_CDOUBLE, LP_CINT, ctypes.c_double, ctypes.c_int, ctypes.c_int]
+lib.build_index.argtypes = [LP_CDOUBLE, LP_CINDEX_T, ctypes.c_double, CINDEX_T, CINDEX_T]
 # interpolate2(double *pts, double *base_pts, double *base_z, double *out,
 # int *tri, spatial_index *ind, int np)
 lib.interpolate.argtypes = [
@@ -71,40 +76,40 @@ lib.interpolate.argtypes = [
     LP_CDOUBLE,
     LP_CDOUBLE,
     ctypes.c_double,
-    LP_CINT,
+    LP_CINDEX_T,
     ctypes.c_void_p,
     LP_CCHAR,
-    ctypes.c_int]
+    CINDEX_T]
 lib.interpolate.restype = None
 # void make_grid(double *base_pts,double *base_z, int *tri, float *grid,
 # float tgrid, double nd_val, int ncols, int nrows, double cx, double cy,
 # double xl, double yu, spatial_index *ind)
 lib.make_grid.argtypes = [LP_CDOUBLE,
                           LP_CDOUBLE,
-                          LP_CINT,
+                          LP_CINDEX_T,
                           LP_CFLOAT,
                           LP_CFLOAT,
                           ctypes.c_float,
-                          ctypes.c_int,
-                          ctypes.c_int] + [ctypes.c_double] * 4 + [ctypes.c_void_p]
+                          CINDEX_T,
+                          CINDEX_T] + [ctypes.c_double] * 4 + [ctypes.c_void_p]
 lib.make_grid.restype = None
 # void make_grid_low(double *base_pts,double *base_z, int *tri, float
 # *grid,  float nd_val, int ncols, int nrows, double cx, double cy, double
 # xl, double yu, double cut_off, spatial_index *ind)
 lib.make_grid_low.argtypes = [LP_CDOUBLE,
                               LP_CDOUBLE,
-                              LP_CINT,
+                              LP_CINDEX_T,
                               LP_CFLOAT,
                               ctypes.c_float,
-                              ctypes.c_int,
-                              ctypes.c_int] + [ctypes.c_double] * 5 + [ctypes.c_void_p]
+                              CINDEX_T,
+                              CINDEX_T] + [ctypes.c_double] * 5 + [ctypes.c_void_p]
 lib.make_grid_low.restype = None
 lib.optimize_index.argtypes = [ctypes.c_void_p]
 lib.optimize_index.restype = None
 
-delaunator_lib.triangulate.argtypes = [ctypes.c_int, LP_CDOUBLE, LP_CINT, ctypes.POINTER(LP_CINT)]
+delaunator_lib.triangulate.argtypes = [CINDEX_T, LP_CDOUBLE, LP_CINDEX_T, ctypes.POINTER(LP_CINDEX_T)]
 delaunator_lib.triangulate.restype = None
-delaunator_lib.free_face_data.argtypes = [ctypes.POINTER(LP_CINT)]
+delaunator_lib.free_face_data.argtypes = [ctypes.POINTER(LP_CINDEX_T)]
 delaunator_lib.free_face_data.restype = None
 
 
@@ -238,10 +243,10 @@ class TriangulationBase(object):
         Invalid indices used to give (-1,-1,-1) rows, will now cause an
         exception."""
         if indices is None:
-            indices = np.arange(0, self.ntrig).astype(np.int32)
-        self.validate_points(indices, 1, np.int32)
+            indices = np.arange(0, self.ntrig).astype(np.int64)
+        self.validate_points(indices, 1, np.int64)
         vertex_indices_array = np.ctypeslib.as_array(self.ptr_faces, (self.ntrig, 3))
-        out = vertex_indices_array[indices, :].astype(np.int32)
+        out = vertex_indices_array[indices, :].astype(np.int64)
         return out
 
     def get_triangle_centers(self):
@@ -287,7 +292,7 @@ class TriangulationBase(object):
             Numpy 1d int32 array containing triangles indices. -1 is used to indicate no (valid) triangle.
         """
         self.validate_points(xy)
-        out = np.empty((xy.shape[0],), dtype=np.int32)
+        out = np.empty((xy.shape[0],), dtype=np.int64)
         if mask is not None:
             if mask.shape[0] != self.ntrig:
                 raise ValueError("Validity mask size differs from number of triangles")
@@ -297,7 +302,7 @@ class TriangulationBase(object):
             pmask = None
         lib.find_triangle(
             xy.ctypes.data_as(LP_CDOUBLE),
-            out.ctypes.data_as(LP_CINT),
+            out.ctypes.data_as(LP_CINDEX_T),
             self.points.ctypes.data_as(LP_CDOUBLE),
             self.vertices,
             self.index,
@@ -312,8 +317,8 @@ class Triangulation(TriangulationBase):
     def __init__(self, points, cs=-1):
         self.validate_points(points)
         self.points = points
-        num_faces = ctypes.c_int(0)
-        self.ptr_faces = ctypes.POINTER(ctypes.c_int)()
+        num_faces = CINDEX_T(0)
+        self.ptr_faces = ctypes.POINTER(CINDEX_T)()
         delaunator_lib.triangulate(points.shape[0],
                                    points.ctypes.data_as(LP_CDOUBLE),
                                    ctypes.byref(num_faces),
