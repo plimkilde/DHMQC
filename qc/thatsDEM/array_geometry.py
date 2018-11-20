@@ -33,6 +33,7 @@ HMAP_TYPE = np.ctypeslib.ndpointer(dtype=np.uint32, ndim=2, flags=['C', 'O', 'A'
 UINT8_VOXELS = np.ctypeslib.ndpointer(dtype=np.uint8, ndim=3, flags=['C', 'O', 'A', 'W'])
 INT32_VOXELS = np.ctypeslib.ndpointer(dtype=np.int32, ndim=3, flags=['C', 'O', 'A', 'W'])
 INT32_TYPE = np.ctypeslib.ndpointer(dtype=np.int32, ndim=1, flags=['C', 'O', 'A', 'W'])
+INT64_TYPE = np.ctypeslib.ndpointer(dtype=np.int64, ndim=1, flags=['C', 'O', 'A', 'W'])
 LP_CINT = ctypes.POINTER(ctypes.c_int)
 LP_CCHAR = ctypes.POINTER(ctypes.c_char)
 
@@ -58,7 +59,7 @@ lib.get_triangle_geometry.restype = None
 lib.mark_bd_vertices.argtypes = [MASK_TYPE, MASK_TYPE, LP_CINDEX_T, MASK_TYPE, CINDEX_T, CINDEX_T]
 lib.mark_bd_vertices.restype = None
 # int fill_spatial_index(int *sorted_flat_indices, int *index, int npoints, int max_index)
-lib.fill_spatial_index.argtypes = [INT32_TYPE, INT32_TYPE, ctypes.c_int, ctypes.c_int]
+lib.fill_spatial_index.argtypes = [INT64_TYPE, INT64_TYPE, CINDEX_T, CINDEX_T]
 lib.fill_spatial_index.restype = ctypes.c_int
 STD_FILTER_ARGS = [
     XY_TYPE,
@@ -67,9 +68,9 @@ STD_FILTER_ARGS = [
     Z_TYPE,
     ctypes.c_double,
     ctypes.c_double,
-    INT32_TYPE,
+    INT64_TYPE,
     XY_TYPE,
-    ctypes.c_int]
+    CINDEX_T]
 lib.pc_min_filter.argtypes = STD_FILTER_ARGS
 lib.pc_min_filter.restype = None
 lib.pc_mean_filter.argtypes = STD_FILTER_ARGS
@@ -88,9 +89,9 @@ lib.pc_density_filter.argtypes = [
     Z_TYPE,
     Z_TYPE,
     ctypes.c_double,
-    INT32_TYPE,
+    INT64_TYPE,
     XY_TYPE,
-    ctypes.c_int]
+    CINDEX_T]
 lib.pc_density_filter.restype = None
 lib.pc_spike_filter.argtypes = [
     XY_TYPE,
@@ -101,9 +102,9 @@ lib.pc_spike_filter.argtypes = [
     ctypes.c_double,
     ctypes.c_double,
     ctypes.c_double,
-    INT32_TYPE,
+    INT64_TYPE,
     XY_TYPE,
-    ctypes.c_int]
+    CINDEX_T]
 lib.pc_spike_filter.restype = None
 # void pc_noise_filter(double *pc_xy, double *pc_z, double *z_out, double filter_rad, double zlim, double den_cut, int *spatial_index, double *header, int npoints);
 # binning
@@ -112,7 +113,7 @@ lib.moving_bins.argtypes = [Z_TYPE, INT32_TYPE, ctypes.c_double, ctypes.c_int]
 lib.moving_bins.restype = None
 # a triangle based filter
 # void tri_filter_low(double *z, double *zout, int *tri, double cut_off, int ntri)
-lib.tri_filter_low.argtypes = [Z_TYPE, Z_TYPE, LP_CINT, ctypes.c_double, ctypes.c_int]
+lib.tri_filter_low.argtypes = [Z_TYPE, Z_TYPE, LP_CINDEX_T, ctypes.c_double, CINDEX_T]
 lib.tri_filter_low.restype = None
 # hmap filler
 # void fill_it_up(unsigned char *out, unsigned int *hmap, int rows, int cols, int stacks);
