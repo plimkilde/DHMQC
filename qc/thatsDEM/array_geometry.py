@@ -125,7 +125,7 @@ lib.find_floating_voxels.restype = None
 lib.flood_cells.argtypes = [GRID32_TYPE, ctypes.c_float, MASK2D_TYPE, MASK2D_TYPE] + [ctypes.c_int] * 2
 lib.flood_cells.restype = ctypes.c_int
 # void masked_mean_filter(float *dem, float *out, char *mask, int filter_rad, int nrows, int ncols)
-lib.masked_mean_filter.argtypes = [GRID32_TYPE, GRID32_TYPE, MASK2D_TYPE] + [ctypes.c_int] * 3
+lib.masked_mean_filter.argtypes = [GRID32_TYPE, GRID32_TYPE, MASK2D_TYPE] + [CINDEX_T] * 3
 lib.binary_fill_gaps.argtypes = [MASK2D_TYPE, MASK2D_TYPE, ctypes.c_int, ctypes.c_int]
 lib.binary_fill_gaps.restype = None
 

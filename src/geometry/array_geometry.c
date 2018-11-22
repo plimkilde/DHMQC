@@ -667,9 +667,9 @@ void binary_fill_gaps(char *M, char *out, int nrows, int ncols){
 
 /* MASK based raster filters*/
 
-void masked_mean_filter(float *dem, float *out, char *mask, int filter_rad, int nrows, int ncols){
+void masked_mean_filter(float *dem, float *out, char *mask, index_t filter_rad, index_t nrows, index_t ncols){
 	/*consider what to do about nd_vals - should probably be handled by caller */
-	int i,j,i1,i2,j1,j2,m,n,ind1,ind2,used;
+	index_t i,j,i1,i2,j1,j2,m,n,ind1,ind2,used;
 	double v;
 	for(i=0 ; i<nrows ; i++){
 		for(j=0; j<ncols ; j++){

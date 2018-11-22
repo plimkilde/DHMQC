@@ -540,6 +540,7 @@ void make_grid(double *base_pts,double *base_z, index_t *tri, float *grid, float
 	double xy[2],b[3],z_int,*p1,*p2,*p3,x1,x2,y1,y2;
 	icols=ind->ncols;
 	icells=ind->ncells;
+
 	for(i=0; i<nrows; i++){
 		for(j=0; j<ncols; j++){	
 			xy[1]=yu-(i+0.5)*cy;
@@ -554,7 +555,7 @@ void make_grid(double *base_pts,double *base_z, index_t *tri, float *grid, float
 			if (j>10)
 				return;*/
 			if (0<=grid_index && grid_index<icells && arr[grid_index]!=NULL){
-				int *list=arr[grid_index];
+				index_t *list=arr[grid_index];
 				for(k=2;k<2+list[1];k++){
 					m=list[k];
 					p1=base_pts+2*tri[3*m];
@@ -597,7 +598,7 @@ void make_grid_low(double *base_pts,double *base_z, index_t *tri, float *grid,  
 			if (j>10)
 				return;*/
 			if (0<=grid_index && grid_index<icells && arr[grid_index]!=NULL){
-				int *list=arr[grid_index];
+				index_t *list=arr[grid_index];
 				for(k=2;k<2+list[1];k++){
 					m=list[k];
 					p1=base_pts+2*tri[3*m];

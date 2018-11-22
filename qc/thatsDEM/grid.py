@@ -36,6 +36,11 @@ INT32_GRID_TYPE = np.ctypeslib.ndpointer(dtype=np.int32, ndim=2, flags=['C', 'O'
 INT32_TYPE = np.ctypeslib.ndpointer(dtype=np.int32, ndim=1, flags=['C', 'O', 'A', 'W'])
 LP_CDOUBLE = ctypes.POINTER(ctypes.c_double)
 GEO_REF_ARRAY = ctypes.c_double * 4
+
+# corresponds to the typedef for index_t in trig_index.h
+CINDEX_T = ctypes.c_int64
+LP_CINDEX_T = ctypes.POINTER(ctypes.c_int64)
+
 lib = np.ctypeslib.load_library(LIBNAME, LIBDIR)
 # void wrap_bilin(double *grid, double *xy, double *out, double *geo_ref,
 # double nd_val, int nrows, int ncols, int npoints)
@@ -45,9 +50,9 @@ lib.wrap_bilin.argtypes = [
     Z_TYPE,
     LP_CDOUBLE,
     ctypes.c_double,
-    ctypes.c_int,
-    ctypes.c_int,
-    ctypes.c_int]
+    CINDEX_T,
+    CINDEX_T,
+    CINDEX_T]
 lib.wrap_bilin.restype = None
 # DLL_EXPORT void resample_grid(double *grid, double *out, double
 # *geo_ref, double *geo_ref_out, double nd_val, int nrows, int ncols, int
@@ -58,10 +63,10 @@ lib.resample_grid.argtypes = [
     LP_CDOUBLE,
     LP_CDOUBLE,
     ctypes.c_double,
-    ctypes.c_int,
-    ctypes.c_int,
-    ctypes.c_int,
-    ctypes.c_int]
+    CINDEX_T,
+    CINDEX_T,
+    CINDEX_T,
+    CINDEX_T]
 lib.resample_grid.restype = None
 # void grid_most_frequent_value(int *sorted_indices, int *values, int
 # *out, int vmin,int vmax,int nd_val, int n)
