@@ -38,6 +38,7 @@ LP_CFLOAT = ctypes.POINTER(ctypes.c_float)
 LP_CINT = ctypes.POINTER(ctypes.c_int)
 LP_CCHAR = ctypes.POINTER(ctypes.c_char)
 LP_CULONGLONG = ctypes.POINTER(ctypes.c_ulonglong)
+LP_CSIZE_T = ctypes.POINTER(ctypes.c_size_t)
 # lib_name=os.path.join(os.path.dirname(__file__),LIBNAME)
 lib_name = os.path.join(LIBDIR, LIBNAME)
 delaunator_lib_name = os.path.join(LIBDIR, DELAUNATOR_LIBNAME)
@@ -102,10 +103,10 @@ lib.make_grid_low.restype = None
 lib.optimize_index.argtypes = [ctypes.c_void_p]
 lib.optimize_index.restype = None
 
-delaunator_lib.triangulate.argtypes = [ctypes.c_int, LP_CDOUBLE, LP_CINT, ctypes.POINTER(LP_CINT)]
+delaunator_lib.triangulate.argtypes = [ctypes.c_int, LP_CDOUBLE, LP_CINT, ctypes.POINTER(LP_CINT), ctypes.c_void_p]
 delaunator_lib.triangulate.restype = None
-delaunator_lib.free_face_data.argtypes = [ctypes.POINTER(LP_CINT)]
-delaunator_lib.free_face_data.restype = None
+delaunator_lib.free_triangulation.argtypes = [ctypes.POINTER(LP_CINT), ctypes.c_void_p]
+delaunator_lib.free_triangulation.restype = None
 
 
 class TriangulationBase(object):
@@ -123,7 +124,7 @@ class TriangulationBase(object):
     def __del__(self):
         """Destructor"""
         if self.vertices is not None:
-            delaunator_lib.free_face_data(ctypes.byref(self.ptr_faces))
+            delaunator_lib.free_triangulation(self.ptr_faces, self.ptr_triangulation)
         if self.index is not None:
             lib.free_index(self.index)
 
@@ -314,10 +315,12 @@ class Triangulation(TriangulationBase):
         self.points = points
         num_faces = ctypes.c_int(0)
         self.ptr_faces = ctypes.POINTER(ctypes.c_int)()
+        self.ptr_triangulation = ctypes.c_void_p(0)
         delaunator_lib.triangulate(points.shape[0],
                                    points.ctypes.data_as(LP_CDOUBLE),
                                    ctypes.byref(num_faces),
-                                   ctypes.byref(self.ptr_faces))
+                                   ctypes.byref(self.ptr_faces),
+                                   ctypes.byref(self.ptr_triangulation))
         self.ntrig = num_faces.value
         self.vertices = self.ptr_faces.contents
         #print("Triangles: %d" %self.ntrig)
