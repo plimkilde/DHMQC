@@ -34,7 +34,7 @@
 
 
 static int bc2(double *p0, double *p1, double *p2, double *p3, double *b);
-static int *append(int *list, int n);
+static size_t *append(size_t *list, size_t n);
 static void user2array(double *p, int *carr,double *extent, double cs);
 static void user2array2(double *p, double *carr,double *extent, double cs);
 static void reweight(double *b, double *z, int *c);
@@ -146,10 +146,10 @@ static int bc2(double *p0, double *p1, double *p2, double *p3, double *b){
 
 
 /* Append positive number to a 'set' of positive numbers... */
-static int *append(int *list, int n){
-	int found = 0, room;
+static size_t *append(size_t *list, size_t n){
+	size_t found = 0, room;
 	if (list==NULL){
-		list=malloc(sizeof(int)*(3+EXTRA_SLOTS));
+		list=malloc(sizeof(size_t)*(3+EXTRA_SLOTS));
 		list[0]=3+EXTRA_SLOTS; /*number allocated*/
 		list[1]=1; /*cells used*/
 		list[2]=n;
@@ -166,7 +166,7 @@ static int *append(int *list, int n){
 		room=list[1]+2;
 		if (room>list[0]){ /*if not room*/
 			list[0]=room+EXTRA_SLOTS;
-			list=realloc(list,sizeof(int)*(room+EXTRA_SLOTS)); /*allocate one more slot than needed*/
+			list=realloc(list,sizeof(size_t)*(room+EXTRA_SLOTS)); /*allocate one more slot than needed*/
 		}	
 		list[list[1]+1]=n;
 	}
@@ -177,10 +177,10 @@ static int *append(int *list, int n){
 
 /*Builds the spatial index*/
 /* Beware of overflow for more than 2 billion triangles - triangle uses ints*/
-spatial_index *build_index(double *pts, int *tri, double cs, int n, int m){
-	int i,j,k,ncols,nrows,I[2],J[2],nhits=0,r,c,mask_rows,mask_cols,*vertex, ncells;
+spatial_index *build_index(double *pts, size_t *tri, double cs, size_t n, size_t m){
+	size_t i,j,k,ncols,nrows,I[2],J[2],nhits=0,r,c,mask_rows,mask_cols,*vertex, ncells;
 	double extent[4],*p,p1[2],p2[2],inters[2],parr[6];
-	int **index_arr;
+	size_t **index_arr;
 	char *mask, default_mask[DEFAULT_MASK*DEFAULT_MASK],is_allocated=0; /*for storing cell housekeeping array*/
 	spatial_index *ind;
 	extent[0]=pts[0];
@@ -209,15 +209,15 @@ spatial_index *build_index(double *pts, int *tri, double cs, int n, int m){
 	}
 	extent[0]-=0.5*cs;
 	extent[3]+=0.5*cs;
-	ncols=((int) ((extent[2]-extent[0])/cs))+2;
-	nrows=((int) ((extent[3]-extent[1])/cs))+2;
+	ncols=((size_t) ((extent[2]-extent[0])/cs))+2;
+	nrows=((size_t) ((extent[3]-extent[1])/cs))+2;
 	extent[1]=extent[3]-nrows*cs;
 	extent[2]=extent[0]+ncols*cs;
 	ncells=ncols*nrows;
 	#ifdef _DEBUG
 	printf("Virtual rows and columns: %d %d , size: %d\n",nrows,ncols,ncells);
 	#endif
-	index_arr=calloc(ncells,sizeof(int*));
+	index_arr=calloc(ncells,sizeof(size_t*));
 	/*loop over triangles*/
 	for(i=0; i<m; i++){
 		#ifdef _DEBUG
@@ -232,8 +232,8 @@ spatial_index *build_index(double *pts, int *tri, double cs, int n, int m){
 			#ifdef _DEBUG
 			printf("Array coords of vertex %d: x: %.2f, y: %.2f\n",j,parr[2*j],parr[2*j+1]);
 			#endif
-			r=(int) parr[2*j+1];
-			c=(int) parr[2*j];
+			r=(size_t) parr[2*j+1];
+			c=(size_t) parr[2*j];
 			#ifdef _DEBUG
 			if ((r*c)>=ncells || r<0 || c<0){
 				printf("ERROR: %d %d, x: %.2f, y: %.2f\n,",r,c,p[0],p[1]);
@@ -262,7 +262,7 @@ spatial_index *build_index(double *pts, int *tri, double cs, int n, int m){
 		mask=NULL;
 		if (mask_rows>1 && mask_cols>1){
 			/*TODO: transform to array coords to speed things up!!*/
-			int chit[2],ch,nintersect;
+			int chit[2],ch,nintersect; /* don't use size_t here, we need the sign */
 			if (mask_rows<DEFAULT_MASK && mask_cols<DEFAULT_MASK){
 				mask=default_mask;
 				for(r=0;r<mask_rows;r++){
@@ -295,7 +295,7 @@ spatial_index *build_index(double *pts, int *tri, double cs, int n, int m){
 				for(k=0;k<3;k++){
 					if (line_intersection(p1,p2,parr+k*2,parr+((k+1)%3)*2,inters)){
 						/*hmmm might as well calc span here*/
-						ch=(int) (inters[0]-J[0]);
+						ch=(size_t) (inters[0]-J[0]);
 						chit[0]=MIN(ch,chit[0]);
 						chit[1]=MAX(ch,chit[1]);
 						nintersect+=1;
@@ -329,7 +329,7 @@ spatial_index *build_index(double *pts, int *tri, double cs, int n, int m){
 				for(k=0;k<3;k++){
 					if (line_intersection(p1,p2,parr+2*k,parr+((k+1)%3)*2,inters)){
 						/*hmmm might as well calc span here*/
-						ch=(int) (inters[1]-I[0]);
+						ch=(size_t) (inters[1]-I[0]);
 						chit[0]=MIN(ch,chit[0]);
 						chit[1]=MAX(ch,chit[1]);
 						nintersect+=1;
@@ -348,7 +348,7 @@ spatial_index *build_index(double *pts, int *tri, double cs, int n, int m){
 		} /*end dotest*/
 		for(r=I[0]; r<=I[1]; r++){
 			for(c=J[0];c<=J[1];c++){
-				int grid_index=r*ncols+c;
+				size_t grid_index=r*ncols+c;
 				/*if (i%1000==0)
 					printf("r: %d, c: %d, grid_index: %d\n",r,c,grid_index);*/
 				if (grid_index<ncells){
@@ -395,7 +395,7 @@ void inspect_index(spatial_index *ind, char *buf, int buf_len){
 	int i, nhit=0,nmax=0;
 	unsigned long nbytes=0;
 	double nav=0;
-	int **arr=ind->index_arr;
+	size_t **arr=ind->index_arr;
 	char *pos=buf;
 	pos+=sprintf(pos,"************Index inspection***********\n");
 	if (pos-buf<buf_len-20)
@@ -408,13 +408,13 @@ void inspect_index(spatial_index *ind, char *buf, int buf_len){
 		pos+=sprintf(pos,"Virtual 'Grid' extent: %.2f %.2f %.2f %.2f\n",ind->extent[0],ind->extent[1],ind->extent[2],ind->extent[3]);
 	if (pos-buf<buf_len-30)
 		pos+=sprintf(pos,"Triangulated points: %d, triangles: %d\n",ind->npoints,ind->ntri);
-	nbytes=(ind->ncells*sizeof(int*));
+	nbytes=(ind->ncells*sizeof(size_t*));
 	for (i=0; i<ind->ncells; i++){
 		if (arr[i]!=NULL){
 			int nhere=arr[i][1];
 			nmax=MAX(nhere,nmax);
 			nav+=((double) nhere)/ind->ncells;
-			nbytes+=(arr[i][0])*sizeof(int);
+			nbytes+=(arr[i][0])*sizeof(size_t);
 			nhit++;
 		}
 	}
@@ -433,7 +433,7 @@ void inspect_index(spatial_index *ind, char *buf, int buf_len){
 
 /* free a spatial index */
 void free_index(spatial_index *ind){
-	int i;
+	size_t i;
 	if (!ind)
 		return;
 	for (i=0; i<ind->ncells; i++){

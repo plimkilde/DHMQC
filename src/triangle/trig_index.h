@@ -15,10 +15,10 @@
  * 
  */
 struct index{
-	int ncols,npoints,ntri,ncells;
+	size_t ncols,npoints,ntri,ncells;
 	double extent[4];
 	double cs;
-	int **index_arr;
+	size_t **index_arr;
 };
 
 typedef struct index spatial_index;
@@ -27,7 +27,7 @@ typedef struct index spatial_index;
 
 void inspect_index(spatial_index *ind, char *buf, int buf_len);
 int line_intersection(double *p1,double *p2, double *p3, double *p4, double *out);
-spatial_index *build_index(double *pts, int *tri, double cs, int n, int m);
+spatial_index *build_index(double *pts, size_t *tri, double cs, size_t n, size_t m);
 /*void find_triangle(double *pts, int *out, spatial_index *ind, double *eq, int np);*/
 void find_triangle(double *pts, int *out, double *base_pts,int *tri, spatial_index *ind, char *mask, int np);
 /*void find_appropriate_triangles(double *pts, int *out, double *base_pts, double *base_z, int *tri, spatial_index *ind, int np, double tol_xy, double tol_z);

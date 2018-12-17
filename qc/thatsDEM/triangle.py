@@ -63,7 +63,7 @@ lib.find_triangle.argtypes = [
 lib.inspect_index.restype = None
 lib.inspect_index.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_int]
 lib.build_index.restype = ctypes.c_void_p
-lib.build_index.argtypes = [LP_CDOUBLE, LP_CINT, ctypes.c_double, ctypes.c_int, ctypes.c_int]
+lib.build_index.argtypes = [LP_CDOUBLE, LP_CSIZE_T, ctypes.c_double, ctypes.c_size_t, ctypes.c_size_t]
 # interpolate2(double *pts, double *base_pts, double *base_z, double *out,
 # int *tri, spatial_index *ind, int np)
 lib.interpolate.argtypes = [
@@ -240,10 +240,10 @@ class TriangulationBase(object):
         Invalid indices used to give (-1,-1,-1) rows, will now cause an
         exception."""
         if indices is None:
-            indices = np.arange(0, self.ntrig).astype(np.int32)
-        self.validate_points(indices, 1, np.int32)
+            indices = np.arange(0, self.ntrig).astype(np.uintp)
+        self.validate_points(indices, 1, np.uintp)
         vertex_indices_array = np.ctypeslib.as_array(self.ptr_faces, (self.ntrig, 3))
-        out = vertex_indices_array[indices, :].astype(np.int32)
+        out = vertex_indices_array[indices, :].astype(np.uintp)
         return out
 
     def get_triangle_centers(self):
@@ -289,7 +289,7 @@ class TriangulationBase(object):
             Numpy 1d int32 array containing triangles indices. -1 is used to indicate no (valid) triangle.
         """
         self.validate_points(xy)
-        out = np.empty((xy.shape[0],), dtype=np.int32)
+        out = np.empty((xy.shape[0],), dtype=np.uintp)
         if mask is not None:
             if mask.shape[0] != self.ntrig:
                 raise ValueError("Validity mask size differs from number of triangles")
@@ -299,7 +299,7 @@ class TriangulationBase(object):
             pmask = None
         lib.find_triangle(
             xy.ctypes.data_as(LP_CDOUBLE),
-            out.ctypes.data_as(LP_CINT),
+            out.ctypes.data_as(LP_CSIZE_T),
             self.points.ctypes.data_as(LP_CDOUBLE),
             self.vertices,
             self.index,
