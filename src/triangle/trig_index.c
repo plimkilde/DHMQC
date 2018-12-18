@@ -492,9 +492,9 @@ void find_triangle(double *pts, int *out, double *base_pts,int *tri, spatial_ind
 }
 
 
-void interpolate(double *pts, double *base_pts, double *base_z, double *out, double nd_val, int *tri, spatial_index *ind,char *mask, int np){
-	int I[2],i,j,k,grid_index,ncols,ncells;
-	int **arr=ind->index_arr;
+void interpolate(double *pts, double *base_pts, double *base_z, double *out, double nd_val, size_t *tri, spatial_index *ind, char *mask, size_t np){
+	size_t I[2],i,j,k,grid_index,ncols,ncells;
+	size_t **arr=ind->index_arr;
 	double b[3],z_int;
 	ncols=ind->ncols;
 	ncells=ind->ncells;

@@ -32,6 +32,6 @@ spatial_index *build_index(double *pts, size_t *tri, double cs, size_t n, size_t
 void find_triangle(double *pts, int *out, double *base_pts,int *tri, spatial_index *ind, char *mask, int np);
 /*void find_appropriate_triangles(double *pts, int *out, double *base_pts, double *base_z, int *tri, spatial_index *ind, int np, double tol_xy, double tol_z);
 void interpolate(double *pts, double *z, double *out, double nd_val, double *eq, int *tri, spatial_index *ind, int np);*/
-void interpolate(double *pts, double *base_pts, double *base_z, double *out, double nd_val, int *tri, spatial_index *ind, char *mask, int np);
+void interpolate(double *pts, double *base_pts, double *base_z, double *out, double nd_val, size_t *tri, spatial_index *ind, char *mask, size_t np);
 void optimize_index(spatial_index *ind);
 void free_index(spatial_index *ind);

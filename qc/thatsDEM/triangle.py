@@ -72,10 +72,10 @@ lib.interpolate.argtypes = [
     LP_CDOUBLE,
     LP_CDOUBLE,
     ctypes.c_double,
-    LP_CINT,
+    LP_CSIZE_T,
     ctypes.c_void_p,
     LP_CCHAR,
-    ctypes.c_int]
+    ctypes.c_size_t]
 lib.interpolate.restype = None
 # void make_grid(double *base_pts,double *base_z, int *tri, float *grid,
 # float tgrid, double nd_val, int ncols, int nrows, double cx, double cy,
