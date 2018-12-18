@@ -64,9 +64,9 @@ STD_FILTER_ARGS = [
     Z_TYPE,
     ctypes.c_double,
     ctypes.c_double,
-    INT32_TYPE,
+    UINTP_TYPE,
     XY_TYPE,
-    ctypes.c_int]
+    ctypes.c_size_t]
 lib.pc_min_filter.argtypes = STD_FILTER_ARGS
 lib.pc_min_filter.restype = None
 lib.pc_mean_filter.argtypes = STD_FILTER_ARGS
