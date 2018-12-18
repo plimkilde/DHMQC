@@ -968,7 +968,8 @@ class Pointcloud(object):
         B = arr_coords[:, 1] * ncols + arr_coords[:, 0]
         I = np.argsort(B)
         B = B[I]
-        self.spatial_index = np.ones((ncols * nrows * 2,), dtype=np.uintp) * -1
+        #self.spatial_index = np.ones((ncols * nrows * 2,), dtype=np.uintp) * -1
+        self.spatial_index = np.zeros((ncols * nrows * 2,), dtype=np.uintp) # size_t cannot be -1
         res = array_geometry.lib.fill_spatial_index(B, self.spatial_index, B.shape[0], ncols * nrows)
         if res != 0:
             raise Exception("Size of spatial index array too small! Programming error!")

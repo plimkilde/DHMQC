@@ -16,10 +16,10 @@
  */
 int p_in_poly(double *p_in, char *mout, double *verts, unsigned int np, unsigned int  *nv, unsigned int n_rings);
 void p_in_buf(double *p_in, char *mout, double *verts, unsigned long np, unsigned long nv, double d);
-void get_triangle_geometry(double *xy, double *z, int *triangles, float *out , int ntriangles);
+void get_triangle_geometry(double *xy, double *z, size_t *triangles, float *out, size_t ntriangles);
 void fill_it_up(unsigned char *out, unsigned int *hmap, int rows, int cols, int stacks);
 void find_floating_voxels(int *lab,  int *out, int gcomp, int rows, int cols, int stacks);
-int fill_spatial_index(int *sorted_flat_indices, int *index, int npoints, int max_index);
+int fill_spatial_index(size_t *sorted_flat_indices, size_t *index, size_t npoints, size_t max_index);
 typedef double(*FILTER_FUNC)(double *, double , int*, double* , double* , double, double, void*);
 void pc_min_filter(double *xy, double *pc_xy, double *pc_z, double *z_out, double filter_rad, double nd_val, int *spatial_index, double *header, int npoints);
 void pc_spike_filter(double *xy, double *z, double *pc_xy, double *pc_z, double *z_out, double filter_rad, double tanv2, double zlim, int *spatial_index, double *header, int npoints);

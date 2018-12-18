@@ -188,8 +188,8 @@ static void compute_normal(double *p1, double *p2, double *p3,double z1, double 
 	n[2]=v1[0]*v2[1]-v1[1]*v2[0];
 }
 
-void get_triangle_geometry(double *xy, double *z, int *triangles, float *out , int ntriangles){
-	int i;
+void get_triangle_geometry(double *xy, double *z, size_t *triangles, float *out , size_t ntriangles){
+	size_t i;
 	double n[3],*p1,*p2,*p3,z1,z2,z3,x1,x2,y1,y2,zmax,zmin;
 	for(i=0;i<ntriangles;i++){
 		p1=xy+2*triangles[3*i];
@@ -271,8 +271,8 @@ void find_floating_voxels(int *lab, int *out, int gcomp, int rows, int cols, int
 	
 
 /*fill a spatial index for a pointcloud*/
-int fill_spatial_index(int *sorted_flat_indices, int *index, int npoints, int max_index){
-	int i,j, ind, current_index=sorted_flat_indices[0];
+int fill_spatial_index(size_t *sorted_flat_indices, size_t *index, size_t npoints, size_t max_index){
+	size_t i,j, ind, current_index=sorted_flat_indices[0];
 	for(i=0;i<2*current_index;i++){
 		index[i]=0;  /*empty slices here*/
 	}
