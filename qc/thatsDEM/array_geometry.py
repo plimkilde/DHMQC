@@ -98,9 +98,9 @@ lib.pc_spike_filter.argtypes = [
     ctypes.c_double,
     ctypes.c_double,
     ctypes.c_double,
-    INT32_TYPE,
+    UINTP_TYPE,
     XY_TYPE,
-    ctypes.c_int]
+    ctypes.c_size_t]
 lib.pc_spike_filter.restype = None
 # void pc_noise_filter(double *pc_xy, double *pc_z, double *z_out, double filter_rad, double zlim, double den_cut, int *spatial_index, double *header, int npoints);
 # binning
