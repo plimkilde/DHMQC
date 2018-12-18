@@ -52,7 +52,7 @@ lib.get_triangle_geometry.argtypes = [
         dtype=np.float32, ndim=2, flags=[
             'C', 'O', 'A', 'W']), ctypes.c_size_t]
 lib.get_triangle_geometry.restype = None
-lib.mark_bd_vertices.argtypes = [MASK_TYPE, MASK_TYPE, LP_CINT, MASK_TYPE, ctypes.c_int, ctypes.c_int]
+lib.mark_bd_vertices.argtypes = [MASK_TYPE, MASK_TYPE, LP_CSIZE_T, MASK_TYPE, ctypes.c_size_t, ctypes.c_size_t]
 lib.mark_bd_vertices.restype = None
 # int fill_spatial_index(int *sorted_flat_indices, int *index, int npoints, int max_index)
 lib.fill_spatial_index.argtypes = [UINTP_TYPE, UINTP_TYPE, ctypes.c_size_t, ctypes.c_size_t]

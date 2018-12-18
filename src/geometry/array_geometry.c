@@ -734,8 +734,8 @@ int flood_cells(float *dem, float cut_off, char *mask, char *mask_out, int nrows
 	return n_set;
 }
 		
-void mark_bd_vertices(char *bd_candidates_mask, char *poly_mask, int *triangles, char *bd_mask_out, int ntriangles, int np){
-	int i,j,v;
+void mark_bd_vertices(char *bd_candidates_mask, char *poly_mask, size_t *triangles, char *bd_mask_out, size_t ntriangles, size_t np){
+	size_t i,j,v;
 	for(i=0; i<np; i++) bd_mask_out[i]=0;
 	for(i=0; i<ntriangles; i++){
 		if (bd_candidates_mask[i]){ /*this triangle is long, or steep, or something...*/
