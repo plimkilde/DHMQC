@@ -25,12 +25,12 @@
 
 extern "C" {
     //SHARED_EXPORT void triangulate(unsigned long long num_vertices, double *vertices, int *ptr_num_faces, int **ptr_faces, void *triangulation_void_p)
-    SHARED_EXPORT void triangulate(double *vertices, size_t num_vertices, size_t **ptr_faces, size_t *ptr_num_faces, void *triangulation_void_p)
+    SHARED_EXPORT void triangulate(double *vertices, ssize_t num_vertices, ssize_t **ptr_faces, ssize_t *ptr_num_faces, void *triangulation_void_p)
     {
         std::vector<double> coords;
         
         //TODO can the vector be constructed directly from the pointer?
-        for (size_t i = 0; i < num_vertices; i++)
+        for (ssize_t i = 0; i < num_vertices; i++)
         {
             coords.push_back(vertices[2*i + 0]);
             coords.push_back(vertices[2*i + 1]);
@@ -39,9 +39,9 @@ extern "C" {
         // Actually perform triangulation
         delaunator::Delaunator *triangulation = new delaunator::Delaunator(coords);
         
-        size_t num_faces = triangulation->triangles.size() / 3;
+        ssize_t num_faces = triangulation->triangles.size() / 3;
 
-        *ptr_faces = triangulation->triangles.data();
+        *ptr_faces = (ssize_t *)triangulation->triangles.data();
         *ptr_num_faces = num_faces;
         triangulation_void_p = (void *)triangulation;
     }

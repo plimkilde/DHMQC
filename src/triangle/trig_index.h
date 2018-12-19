@@ -15,10 +15,10 @@
  * 
  */
 struct index{
-	size_t ncols,npoints,ntri,ncells;
+	ssize_t ncols,npoints,ntri,ncells;
 	double extent[4];
 	double cs;
-	size_t **index_arr;
+	ssize_t **index_arr;
 };
 
 typedef struct index spatial_index;
@@ -27,11 +27,11 @@ typedef struct index spatial_index;
 
 void inspect_index(spatial_index *ind, char *buf, int buf_len);
 int line_intersection(double *p1,double *p2, double *p3, double *p4, double *out);
-spatial_index *build_index(double *pts, size_t *tri, double cs, size_t n, size_t m);
+spatial_index *build_index(double *pts, ssize_t *tri, double cs, ssize_t n, ssize_t m);
 /*void find_triangle(double *pts, int *out, spatial_index *ind, double *eq, int np);*/
-void find_triangle(double *pts, int *out, double *base_pts,int *tri, spatial_index *ind, char *mask, int np);
+void find_triangle(double *pts, ssize_t *out, double *base_pts, ssize_t *tri, spatial_index *ind, char *mask, ssize_t np);
 /*void find_appropriate_triangles(double *pts, int *out, double *base_pts, double *base_z, int *tri, spatial_index *ind, int np, double tol_xy, double tol_z);
 void interpolate(double *pts, double *z, double *out, double nd_val, double *eq, int *tri, spatial_index *ind, int np);*/
-void interpolate(double *pts, double *base_pts, double *base_z, double *out, double nd_val, size_t *tri, spatial_index *ind, char *mask, size_t np);
+void interpolate(double *pts, double *base_pts, double *base_z, double *out, double nd_val, ssize_t *tri, spatial_index *ind, char *mask, ssize_t np);
 void optimize_index(spatial_index *ind);
 void free_index(spatial_index *ind);

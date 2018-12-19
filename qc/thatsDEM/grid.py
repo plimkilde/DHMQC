@@ -45,9 +45,9 @@ lib.wrap_bilin.argtypes = [
     Z_TYPE,
     LP_CDOUBLE,
     ctypes.c_double,
-    ctypes.c_int,
-    ctypes.c_int,
-    ctypes.c_int]
+    ctypes.c_ssize_t,
+    ctypes.c_ssize_t,
+    ctypes.c_ssize_t]
 lib.wrap_bilin.restype = None
 # DLL_EXPORT void resample_grid(double *grid, double *out, double
 # *geo_ref, double *geo_ref_out, double nd_val, int nrows, int ncols, int
@@ -58,10 +58,10 @@ lib.resample_grid.argtypes = [
     LP_CDOUBLE,
     LP_CDOUBLE,
     ctypes.c_double,
-    ctypes.c_int,
-    ctypes.c_int,
-    ctypes.c_int,
-    ctypes.c_int]
+    ctypes.c_ssize_t,
+    ctypes.c_ssize_t,
+    ctypes.c_ssize_t,
+    ctypes.c_ssize_t]
 lib.resample_grid.restype = None
 # void grid_most_frequent_value(int *sorted_indices, int *values, int
 # *out, int vmin,int vmax,int nd_val, int n)
