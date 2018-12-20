@@ -24,25 +24,24 @@
 #endif
 
 extern "C" {
-    //SHARED_EXPORT void triangulate(unsigned long long num_vertices, double *vertices, int *ptr_num_faces, int **ptr_faces, void *triangulation_void_p)
     SHARED_EXPORT void triangulate(double *vertices, ssize_t num_vertices, ssize_t **ptr_faces, ssize_t *ptr_num_faces, void *triangulation_void_p)
     {
-        std::vector<double> coords;
+        // The Delaunator instance needs input coordinates in a vector. Build
+        // this from our C-style array using a range constructor.
+        const std::vector<double> coords(vertices, vertices + 2*num_vertices);
         
-        //TODO can the vector be constructed directly from the pointer?
-        for (ssize_t i = 0; i < num_vertices; i++)
-        {
-            coords.push_back(vertices[2*i + 0]);
-            coords.push_back(vertices[2*i + 1]);
-        }
-        
-        // Actually perform triangulation
+        // Actually perform triangulation.
         delaunator::Delaunator *triangulation = new delaunator::Delaunator(coords);
         
         ssize_t num_faces = triangulation->triangles.size() / 3;
 
+        // Cast from size_t to ssize_t to allow sign (needed for nodata-ish
+        // values).
         *ptr_faces = (ssize_t *)triangulation->triangles.data();
         *ptr_num_faces = num_faces;
+
+        // Also hang on to our Delaunator object so we can free its memory
+        // correctly.
         triangulation_void_p = (void *)triangulation;
     }
     
